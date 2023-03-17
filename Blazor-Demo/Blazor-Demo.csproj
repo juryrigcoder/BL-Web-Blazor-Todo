@@ -4,6 +4,10 @@
     <ProjectReference Include="..\Library-Demo\Library-Demo.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Litedb" Version="5.0.16" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>

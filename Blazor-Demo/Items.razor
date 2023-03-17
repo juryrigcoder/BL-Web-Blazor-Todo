@@ -1,10 +1,9 @@
-@page "/todo"
-@using Library;
-@using System.Text.Json;
+@page "/items"
+@using Library
 @inject IHttpClientFactory ClientFactory
 
 
-<h2>Todo</h2>
+<h2>Items</h2>
     <ul>
         @foreach (var Item in TodoItemList ?? Enumerable.Empty<TodoItem>())
         {
@@ -23,7 +22,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5154/todo");
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5154/items");
 
         var client = ClientFactory.CreateClient();
 
@@ -32,7 +31,7 @@
         if (response.IsSuccessStatusCode)
         {
             using var responseStream = await response.Content.ReadAsStreamAsync();
-            TodoItemList = await JsonSerializer.DeserializeAsync<IEnumerable<TodoItem>>(responseStream);
+            TodoItemList = await System.Text.Json.JsonSerializer.DeserializeAsync<IEnumerable<TodoItem>>(responseStream);
         }
         else
         {
