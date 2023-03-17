@@ -1,0 +1,44 @@
+@page "/todo"
+@using Library;
+@using System.Text.Json
+@inject IHttpClientFactory ClientFactory
+
+
+<h2>Todo</h2>
+    <ul>
+        @foreach (var Item in TodoItemList ?? Enumerable.Empty<TodoItem>())
+        {
+            <li>@Item.Text</li>
+            <li>@Item.Id</li>
+            <li>@Item.IsComplete</li>
+        }
+    </ul>
+
+
+@code {
+    private IEnumerable<TodoItem>? TodoItemList = Array.Empty<TodoItem>();
+    private bool getTodoItemsError;
+    private bool shouldRender;
+    protected override bool ShouldRender() => shouldRender;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5154/todo");
+
+        var client = ClientFactory.CreateClient();
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            TodoItemList = await JsonSerializer.DeserializeAsync<IEnumerable<TodoItem>>(responseStream);
+        }
+        else
+        {
+            getTodoItemsError = true;
+        }
+
+        shouldRender = true;
+    }
+}
