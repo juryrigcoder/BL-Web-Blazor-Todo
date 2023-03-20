@@ -9,7 +9,7 @@
         @foreach (var Item in TodoItemList ?? Enumerable.Empty<TodoItem>())
         {
             <li>@Item.Text</li>
-            <li>@Item.Id</li>
+            <li>@Item._id</li>
             <li>@Item.IsComplete</li>
         }
     </ul>

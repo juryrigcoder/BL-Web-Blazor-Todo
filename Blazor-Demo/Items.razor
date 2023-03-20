@@ -4,11 +4,15 @@
 
 
 <h2>Items</h2>
+
+<input placeholder="Something todo" @bind-value="newTodo" />
+<button @onclick="AddTodo">Add todo</button>
+
     <ul>
-        @foreach (var Item in TodoItemList ?? Enumerable.Empty<TodoItem>())
+        @foreach (var Item in displayTodo ?? Enumerable.Empty<TodoItem>())
         {
             <li>@Item.Text</li>
-            <li>@Item.Id</li>
+            <li>@Item._id</li>
             <li>@Item.IsComplete</li>
         }
     </ul>
@@ -16,9 +20,28 @@
 
 @code {
     private IEnumerable<TodoItem>? TodoItemList = Array.Empty<TodoItem>();
+    public List<TodoItem>? displayTodo = new List<TodoItem>(); 
     private bool getTodoItemsError;
     private bool shouldRender;
     protected override bool ShouldRender() => shouldRender;
+    public string? newTodo;
+    public void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodo))
+        {
+            TodoItem ins = new TodoItem { Text = newTodo, IsComplete = false };
+            displayTodo?.Add(ins);
+            newTodo = string.Empty;
+            InsertItem(ins);
+        }
+    }
+
+    public async Task InsertItem(TodoItem itm){
+        var client = ClientFactory.CreateClient();
+        var postBody = itm;
+using var response = await client.PostAsJsonAsync("http://localhost:5154/insert", postBody);
+        shouldRender = true;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,7 +60,7 @@
         {
             getTodoItemsError = true;
         }
-
+        displayTodo = TodoItemList?.ToList<TodoItem>() ?? new List<TodoItem>();
         shouldRender = true;
     }
 }

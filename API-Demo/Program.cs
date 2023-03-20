@@ -40,11 +40,11 @@ public class Program
         app.MapGet("/todo", () =>
         {
             List<TodoItem> list = new List<TodoItem>() {
-                new TodoItem() { Id = 1, Text = "This is a list of text.", IsComplete = true } ,
-                new TodoItem() { Id = 2, Text = "New todo item.", IsComplete = false } ,
-                new TodoItem() { Id = 3, Text = "Make toast.", IsComplete = false } ,
-                new TodoItem() { Id = 4, Text = "Collect stuff.", IsComplete = true } ,
-                new TodoItem() { Id = 5, Text = "Manage things.", IsComplete = true }
+                new TodoItem() { Text = "This is a list of text.", IsComplete = true } ,
+                new TodoItem() { Text = "New todo item.", IsComplete = false } ,
+                new TodoItem() { Text = "Make toast.", IsComplete = false } ,
+                new TodoItem() { Text = "Collect stuff.", IsComplete = true } ,
+                new TodoItem() { Text = "Manage things.", IsComplete = true }
                 };
             return list == null ? Results.NotFound() : Results.Ok(list);
         })
@@ -53,10 +53,26 @@ public class Program
 
         app.MapGet("/items", (ILiteDatabase db) =>
         {
+                       /* List<TodoItem> list = new List<TodoItem>() {
+                new TodoItem() { Text = "This is a list of text.", IsComplete = true } ,
+                new TodoItem() { Text = "New todo item.", IsComplete = false } ,
+                new TodoItem() { Text = "Make toast.", IsComplete = false } ,
+                new TodoItem() { Text = "Collect stuff.", IsComplete = true } ,
+                new TodoItem() { Text = "Manage things.", IsComplete = true }
+                };
+            db.GetCollection<TodoItem>("TodoItems").InsertBulk(list);*/
+            
             var items = db.GetCollection<TodoItem>("TodoItems").FindAll().ToList();
             return items == null ? Results.NotFound() : Results.Ok(items);
         })
         .WithName("GetItems")
+        .WithOpenApi();
+
+        app.MapPost("/insert",([Microsoft.AspNetCore.Mvc.FromBody] TodoItem item, ILiteDatabase db) =>{
+            var items = db.GetCollection<TodoItem>("TodoItems").Insert(item);
+            return Results.Created($"/insert/{item._id}", item);
+        })
+        .WithName("PostItems")
         .WithOpenApi();
 
         app.Run();
