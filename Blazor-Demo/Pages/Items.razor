@@ -2,21 +2,17 @@
 @using Library
 @inject IHttpClientFactory ClientFactory
 
-
 <h2>Items</h2>
-
-<input placeholder="Something todo" @bind-value="newTodo" />
-<button @onclick="AddTodo">Add todo</button>
-
-    <ul>
+<div>
+   <input placeholder="Something todo" @bind-value="newTodo" />
+<button @onclick="AddTodo">Add todo</button> 
+</div>
+    <div>
         @foreach (var Item in displayTodo ?? Enumerable.Empty<TodoItem>())
         {
-            <li>@Item.Text</li>
-            <li>@Item._id</li>
-            <li>@Item.IsComplete</li>
+            <div>@Item.Text - @Item._id - @Item.IsComplete</div>
         }
-    </ul>
-
+    </div>
 
 @code {
     private IEnumerable<TodoItem>? TodoItemList = Array.Empty<TodoItem>();
@@ -36,19 +32,16 @@
         }
     }
 
-    public async Task InsertItem(TodoItem itm){
+    public async Task InsertItem(TodoItem postBody){
         var client = ClientFactory.CreateClient();
-        var postBody = itm;
-using var response = await client.PostAsJsonAsync("http://localhost:5154/insert", postBody);
+        using var response = await client.PostAsJsonAsync("http://localhost:5154/insert", postBody);
         shouldRender = true;
     }
 
     protected override async Task OnInitializedAsync()
     {
         var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5154/items");
-
         var client = ClientFactory.CreateClient();
-
         var response = await client.SendAsync(request);
 
         if (response.IsSuccessStatusCode)
