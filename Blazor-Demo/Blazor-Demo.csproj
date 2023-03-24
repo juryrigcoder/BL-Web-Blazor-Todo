@@ -14,5 +14,5 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Blazor_Demo</RootNamespace>
   </PropertyGroup>
-<Import Project="C:\Temp\Blazor-demo\Blazor-Demo\StaticAssets\TailwindCli.targets" />
+<Import Project="C:\Temp\BL-Web-Blazor-Todo\Blazor-Demo\StaticAssets\TailwindCli.targets" />
 </Project>

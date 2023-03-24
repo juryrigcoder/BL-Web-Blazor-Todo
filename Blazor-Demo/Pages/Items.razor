@@ -2,17 +2,23 @@
 @using Library
 @inject IHttpClientFactory ClientFactory
 
-<h2>Items</h2>
-<div>
-   <input placeholder="Something todo" @bind-value="newTodo" />
-<button @onclick="AddTodo">Add todo</button> 
+<div class="flex flex-col p-20 bg-blue-100">
+<div class="flex flex-col space-y-4 max-w-xl">
+    <input class="rounded-lg" placeholder="Something todo" @bind-value="newTodo" />
+    <button class="rounded-lg text-xl bg-blue-500 text-blue-100 hover:bg-blue-600 duration-300" @onclick="AddTodo">Add item</button>
 </div>
-    <div>
+<br/>
+    <div class="flex flex-col space-y-4">
         @foreach (var Item in displayTodo ?? Enumerable.Empty<TodoItem>())
         {
-            <div>@Item.Text - @Item._id - @Item.IsComplete</div>
+            <div class="bg-white p-6 rounded-lg shadow-lg max-w-xl">
+                <p class="text-2xl font-bold mb-2 text-gray-800 break-words">@Item.Text</p>
+                <p class="text-gray-700">@Item.IsComplete</p>
+                <p class="text-gray-500">@Item._id</p>
+            </div>
         }
     </div>
+</div>
 
 @code {
     private IEnumerable<TodoItem>? TodoItemList = Array.Empty<TodoItem>();
@@ -21,14 +27,14 @@
     private bool shouldRender;
     protected override bool ShouldRender() => shouldRender;
     public string? newTodo;
-    public void AddTodo()
+    public async Task AddTodo()
     {
         if (!string.IsNullOrWhiteSpace(newTodo))
         {
             TodoItem ins = new TodoItem { Text = newTodo, IsComplete = false };
             displayTodo?.Add(ins);
             newTodo = string.Empty;
-            InsertItem(ins);
+            await InsertItem(ins);
         }
     }
 
