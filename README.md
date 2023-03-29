@@ -47,7 +47,7 @@ This is the class object that describes out Todo items. Next, open a terminal at
 
 In VS Code open the folder BL-Web-Blazor-Todo and open a terminal at this location, the type:
 
-     dotnet new web -o API-Demo --use-program-main
+     dotnet new webapi -o API-Demo --use-program-main --use-minimal-apis
 
 This will create a minimal web API with a main method insertion point. If you intend on using HTTPS then you'll need a dev cert:
 
