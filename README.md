@@ -274,3 +274,9 @@ Then we can update the HTML to include Tailwind classes:
         </div>
     </div>
 ```
+
+Open a terminal in the StaticAssets folder and start a tailwind cli watch session
+
+```
+tailwindcss --watch
+```
