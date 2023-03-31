@@ -21,7 +21,6 @@
 </div>
 
 @code {
-    private IEnumerable<TodoItem>? TodoItemList = Array.Empty<TodoItem>();
     public List<TodoItem>? displayTodo = new List<TodoItem>(); 
     private bool getTodoItemsError;
     private bool shouldRender;
@@ -53,13 +52,13 @@
         if (response.IsSuccessStatusCode)
         {
             using var responseStream = await response.Content.ReadAsStreamAsync();
-            TodoItemList = await System.Text.Json.JsonSerializer.DeserializeAsync<IEnumerable<TodoItem>>(responseStream);
+            displayTodo = await System.Text.Json.JsonSerializer.DeserializeAsync<List<TodoItem>>(responseStream);
         }
         else
         {
             getTodoItemsError = true;
         }
-        displayTodo = TodoItemList?.ToList<TodoItem>() ?? new List<TodoItem>();
+        displayTodo = displayTodo?.ToList<TodoItem>() ?? new List<TodoItem>();
         shouldRender = true;
     }
 }
