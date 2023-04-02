@@ -21,23 +21,23 @@
 </div>
 
 @code {
-    public List<TodoItem>? displayTodo = new List<TodoItem>(); 
-    private bool getTodoItemsError;
-    private bool shouldRender;
+    protected List<TodoItem>? displayTodo = new List<TodoItem>(); 
+    protected bool getTodoItemsError;
+    protected bool shouldRender;
     protected override bool ShouldRender() => shouldRender;
-    public string? newTodo;
-    public async Task AddTodo()
+    protected string? newTodo;
+    protected async Task AddTodo()
     {
-        if (!string.IsNullOrWhiteSpace(newTodo))
-        {
-            TodoItem ins = new TodoItem { Text = newTodo, IsComplete = false };
-            displayTodo?.Add(ins);
-            newTodo = string.Empty;
-            await InsertItem(ins);
-        }
+        if (string.IsNullOrWhiteSpace(newTodo)) return;
+        
+        var ins = new TodoItem { Text = newTodo, IsComplete = false };
+        displayTodo?.Add(ins);
+        newTodo = string.Empty;
+
+        await InsertItem(ins);
     }
 
-    public async Task InsertItem(TodoItem postBody){
+    protected async Task InsertItem(TodoItem postBody){
         var client = ClientFactory.CreateClient();
         using var response = await client.PostAsJsonAsync("http://localhost:5154/insert", postBody);
         shouldRender = true;
